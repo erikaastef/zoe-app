@@ -1,97 +1,122 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useState } from 'react'
 import styled from 'styled-components'
+import { useRouter } from 'next/router'
+
+import { Input } from '../components/Input'
+import { Header } from '../components/Header'
+import { Button } from '../components/Button'
+
+import { useAppDispatch } from '../redux/hooks'
+import { setCurrentIncome } from '../redux/userSlice'
 
 export default function Home() {
-  const [agents, setAgents] = useState([])
-  const [agentsCopy, setAgentsCopy] = useState([])
-  const [hiddenAgents, setHiddenAgents] = useState([])
-  const [index, setIndex] = useState(3)
   const [search, setSearch] = useState('')
-
-  const fetchAgents = async () => {
-    try {
-      const promise = await axios.get('/api/agents')
-      const response = promise.data
-      const agents = response.result
-      setAgents(agents)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-  useEffect(() => {
-    fetchAgents()
-  }, [])
-
-  useEffect(() => {
-    console.log(hiddenAgents)
-  }, [hiddenAgents])
+  const [showInstructions, setShowInstructions] = useState(false)
+  const dispatch = useAppDispatch()
+  const router = useRouter()
 
   const handleChange = (e: any) => {
-    setSearch(e.target.value)
-  }
-
-  const handleClick = () => {
-    if (search.length === 5) {
-      let filteredData = agents.filter((agent: any) => agent.income <= (Number(search) + 10000) && agent.income >= (Number(search) - 10000))
-      setAgentsCopy(filteredData)
+    let value = e.target.value
+    setSearch(value)
+    if (value.length < 5) {
+      if (!showInstructions) setShowInstructions(true)
+    } else {
+      setShowInstructions(false)
     }
   }
-  const handleShowMore = () => {
-    setIndex(prev => prev + 3)
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter' && search.length) {
+      handleClick(e)
+    }
   }
-  const handleShowLess = () => {
-    setIndex(prev => prev - 3)
-  }
-  const handleClickedAgent = (index: any) => {
-    let currentAgents = [...agentsCopy]
-    let removedAgent = currentAgents.splice(index, 1)
-    setAgentsCopy(currentAgents)
-    setHiddenAgents([...hiddenAgents, ...removedAgent])
+  const handleClick = (e: any) => {
+    e.preventDefault()
+    dispatch(setCurrentIncome(search))
+    router.push('/agents')
   }
   return (
-    <Container>
-      <Input
-        type="number"
-        value={search}
-        onChange={handleChange}
-      />
-      <Button
-        onClick={handleClick}
-      >
-        Match
-      </Button>
-      {
-        agentsCopy.length ?
-          agentsCopy.slice(0, index).map((agent, index) => (
-            <div
-              key={agent.id}
-              onClick={() => handleClickedAgent(index)}
-            >
-              {agent.name}
-            </div>
-          )) : ''
-      }
-      <Button
-        onClick={handleShowMore}
-      >
-        Show more
-      </Button>
-      <Button
-        onClick={handleShowLess}
-      >
-        Show less
-      </Button>
-    </Container>
+    <>
+      <Header />
+      <Container>
+        <Icon src="/icons/team-icon.svg" alt="" />
+        <h1>Find the best agent for you!</h1>
+        <h2>Fill the information below to get your matches.</h2>
+        <Form>
+          <Input
+            type="number"
+            value={search}
+            icon="dollar"
+            label="Current income"
+            showInstructions={showInstructions}
+            instructions="Enter an amount of at least 5 digits."
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+          />
+          <Button
+            className="match-btn"
+            onClick={handleClick}
+            disabled={search.length < 5}
+            icon="leftArrow"
+          >
+            Get matches
+          </Button>
+        </Form>
+      </Container>
+
+    </>
   )
 }
 
+const Icon = styled.img`
+    width:90px;
+    height:60px;
+    margin-bottom: 24px;
+`
+
 const Container = styled.div`
-  width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    width:414px;
+    height:100%;
+    min-height: calc(100vh - 60px);
+    margin:0 auto;
+    h1{
+        text-align:center;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 32px;
+        line-height: 126%;
+        letter-spacing: -0.01em;
+        margin-bottom:16px;
+    }
+    h2{
+        text-align:center;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 126%;
+        letter-spacing: -0.01em;
+        margin-bottom:56px;
+    }
+    @media(max-width:${({ theme }) => theme.device.sm}){
+        width:85vw;
+        padding:30px 0px;
+    }
 `
-const Input = styled.input`
-  border: 1px solid gray;
+const Form = styled.form`
+    display:flex;
+    flex-direction:column;
+    gap:40px;
+    width:80%;
+    margin:0 auto;
+    .match-btn{
+        align-self:flex-end;
+    }
+    @media(max-width:${({ theme }) => theme.device.sm}){
+        width:100%;
+        margin:0px;
+    }
 `
-const Button = styled.button`
-  border: 1px solid gray;
-`
+
