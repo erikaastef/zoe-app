@@ -1,3 +1,6 @@
+import { createGlobalStyle } from 'styled-components';
+
+export const ResetStyle = createGlobalStyle`
     /*
         Reset based on "Eric Meyer Reset 2.0"
     */
@@ -56,7 +59,6 @@
     input, textarea,
     input:focus, textarea:focus{
         outline:none;
-        -webkit-appearance:none;
     }
 
     a {
@@ -87,3 +89,5 @@
     button:focus{
         outline:0
     }
+
+`
