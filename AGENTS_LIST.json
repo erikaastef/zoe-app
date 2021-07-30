@@ -2,235 +2,235 @@
   {
     "id": 1,
     "name": "Michael",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 85273
   },
   {
     "id": 2,
     "name": "James",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 85750
   },
   {
     "id": 3,
     "name": "Nicholas",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 85383
   },
   {
     "id": 4,
     "name": "Jennifer",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 85716
   },
   {
     "id": 5,
     "name": "Christopher",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 85014
   },
   {
     "id": 6,
     "name": "Michael",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 85751
   },
   {
     "id": 7,
     "name": "Patricia",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 95032
   },
   {
     "id": 8,
     "name": "Beth",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 94556
   },
   {
     "id": 9,
     "name": "Cathy",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 92260
   },
   {
     "id": 10,
     "name": "Harold",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 92120
   },
   {
     "id": 11,
     "name": "Robin",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 94062
   },
   {
     "id": 12,
     "name": "James",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 90503
   },
   {
     "id": 13,
     "name": "Douglas",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 32159
   },
   {
     "id": 14,
     "name": "Donald",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 32404
   },
   {
     "id": 15,
     "name": "Ilene",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 33140
   },
   {
     "id": 16,
     "name": "William",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 33419
   },
   {
     "id": 17,
     "name": "Lynn",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 32789
   },
   {
     "id": 18,
     "name": "Leonie",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 33417
   },
   {
     "id": 19,
     "name": "Katherine",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 32034
   },
   {
     "id": 20,
     "name": "Melissa",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 30516
   },
   {
     "id": 21,
     "name": "Kimberly",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 30345
   },
   {
     "id": 22,
     "name": "Richard",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 30606
   },
   {
     "id": 23,
     "name": "Richard",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 30312
   },
   {
     "id": 24,
     "name": "Ayn",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 31901
   },
   {
     "id": 25,
     "name": "Bruce",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 31410
   },
   {
     "id": 26,
     "name": "Fred",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 89451
   },
   {
     "id": 27,
     "name": "Robert",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 89110
   },
   {
     "id": 28,
     "name": "David",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 89042
   },
   {
     "id": 29,
     "name": "Maureen",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 89074
   },
   {
     "id": 30,
     "name": "Mary Sue",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 89705
   },
   {
     "id": 31,
     "name": "Janet",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 89144
   },
   {
     "id": 32,
     "name": "John",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 89145
   },
   {
     "id": 33,
     "name": "Rand",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 12580
   },
   {
     "id": 34,
     "name": "Kathy",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 10604
   },
   {
     "id": 35,
     "name": "Susan",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 13601
   },
   {
     "id": 36,
     "name": "Robin",
-    "avatar": "",
+    "avatar":"/images/male-1.png",
     "income": 10021
   },
   {
     "id": 37,
     "name": "Peter",
-    "avatar": "",
+    "avatar": "/images/male-2.png",
     "income": 12550
   },
   {
     "id": 38,
     "name": "Diana",
-    "avatar": "",
+    "avatar": "/images/female-1.png",
     "income": 10603
   },
   {
     "id": 39,
     "name": "Richard",
-    "avatar": "",
+    "avatar": "/images/male-1.png",
     "income": 12018
   }
 ]
