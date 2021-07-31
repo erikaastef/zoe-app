@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
+import { AnimatePresence, motion } from 'framer-motion'
 
 import { Header } from '../components/Header'
 import { Input } from '../components/Input'
@@ -14,8 +15,10 @@ import { ErrorMessage } from '../components/ErrorMessage'
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { setAgents, setCurrentIncome } from '../redux/userSlice'
 import { currencyFormat, sortAgents } from '../utils'
+import { Preloader } from '../components/Preloader'
 
 export default function Agents() {
+    const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState('')
     const [showInstructions, setShowInstructions] = useState(false)
 
@@ -38,6 +41,7 @@ export default function Agents() {
             const filteredData = availableAgents.filter((agent: any) => agent.income <= (Number(currentIncome) + 10000) && agent.income >= (Number(currentIncome) - 10000))
             dispatch(setAgents(availableAgents))
             setAgentsCopy(filteredData)
+            setTimeout(() => setLoading(false), 2000)
 
         } catch (err) {
             console.log(err)
@@ -48,6 +52,7 @@ export default function Agents() {
         if (agents.length) {
             let filteredData = agents.filter((agent: any) => agent.income <= (Number(currentIncome) + 10000) && agent.income >= (Number(currentIncome) - 10000))
             setAgentsCopy(filteredData)
+            setTimeout(() => setLoading(false), 2000)
         } else {
             fetchAgents()
         }
@@ -93,10 +98,12 @@ export default function Agents() {
         }
     }
     const handleNewSearch = () => {
+        setLoading(true)
         let filteredData = agents.filter((agent: any) => agent.income <= (Number(search) + 10000) && agent.income >= (Number(search) - 10000))
         dispatch(setCurrentIncome(search))
         setAgentsCopy(filteredData)
         setSearch('')
+        setTimeout(() => setLoading(false), 2000)
     }
 
     const handleShowMore = () => {
@@ -114,73 +121,95 @@ export default function Agents() {
     return (
         <>
             <Header />
-            <Container>
-                {agentsCopy.length ? <h1>Your matches</h1> : <h1>No matches</h1>}
-                <h2>Your income: <strong>{currencyFormat(currentIncome)}</strong></h2>
-                <Form>
-                    <Input
-                        type="number"
-                        value={search}
-                        icon="dollar"
-                        label="Search new income"
-                        showInstructions={showInstructions}
-                        instructions="Enter an amount of at least 5 digits."
-                        onChange={handleInputChange}
-                        onKeyDown={handleKeyDown}
-                    />
-                    <Button
-                        className="match-btn"
-                        onClick={handleNewSearch}
-                        disabled={search.length < 5}
-                        icon="leftArrow"
-                    >
-                        Get matches
-                    </Button>
-                </Form>
+            <AnimatePresence exitBeforeEnter>
                 {
-                    agentsCopy.length ?
-                        <>
-                            <Select
-                                value={order}
-                                label="Order agents by"
-                                className="order-select"
-                                options={selectOptions}
-                                onChange={handleSelectOnChange}
-                            />
-                            <Grid>
-                                {agentsCopy.slice(0, index).map((agent: any, index) => (
-                                    <Card
-                                        key={agent.id}
-                                        onClick={() => handleClickedAgent(index)}
-                                        agent={agent}
-                                    />
-                                ))}
-                            </Grid>
-                            <Controllers>
-                                <Anchor
-                                    onClick={handleShowLess}
-                                    disabled={index === 3}
+                    loading ?
+                        <Container
+                            key="noMatch"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <Preloader maxWidth={300} />
+                        </Container> :
+                        <Container
+                            key="match"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            {agentsCopy.length ? <h1>Your matches</h1> : <h1>No matches</h1>}
+                            <h2>Your income: <strong>{currencyFormat(currentIncome)}</strong></h2>
+                            <Form>
+                                <Input
+                                    type="number"
+                                    value={search}
+                                    icon="dollar"
+                                    label="Search new income"
+                                    showInstructions={showInstructions}
+                                    instructions="Enter an amount of at least 5 digits."
+                                    onChange={handleInputChange}
+                                    onKeyDown={handleKeyDown}
+                                />
+                                <Button
+                                    className="match-btn"
+                                    onClick={handleNewSearch}
+                                    disabled={search.length < 5}
+                                    icon="leftArrow"
                                 >
-                                    Show less -
-                                </Anchor>
-                                <Anchor
-                                    onClick={handleShowMore}
-                                    disabled={index >= agentsCopy.length}
-                                >
-                                    Show more +
-                                </Anchor>
-                            </Controllers>
-                        </> :
-                        <ErrorMessage message="No available Agents based on your income. Please try a different income value." />
+                                    Get matches
+                                </Button>
+                            </Form>
+                            {
+                                agentsCopy.length ?
+                                    <>
+                                        <Select
+                                            value={order}
+                                            label="Order agents by"
+                                            className="order-select"
+                                            options={selectOptions}
+                                            onChange={handleSelectOnChange}
+                                        />
+                                        <Grid>
+                                            {agentsCopy.slice(0, index).map((agent: any, index) => (
+                                                <Card
+                                                    key={agent.id}
+                                                    onClick={() => handleClickedAgent(index)}
+                                                    agent={agent}
+                                                />
+                                            ))}
+                                        </Grid>
+                                        <Controllers>
+                                            <Anchor
+                                                onClick={handleShowLess}
+                                                disabled={index === 3}
+                                            >
+                                                Show less -
+                                            </Anchor>
+                                            <Anchor
+                                                onClick={handleShowMore}
+                                                disabled={index >= agentsCopy.length}
+                                            >
+                                                Show more +
+                                            </Anchor>
+                                        </Controllers>
+                                    </> :
+                                    <ErrorMessage message="No available Agents based on your income. Please try a different income value." />
+                            }
+                        </Container>
                 }
-            </Container>
+            </AnimatePresence>
+
         </>
     )
 }
 
-const Container = styled.div`
+const Container = styled(motion.div)`
     display:flex;
     flex-direction:column;
+    justify-content:center;
     width:85vw;
     height:100%;
     min-height: calc(100vh - 60px);
