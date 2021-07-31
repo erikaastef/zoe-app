@@ -103,6 +103,7 @@ export default function Agents() {
         dispatch(setCurrentIncome(search))
         setAgentsCopy(filteredData)
         setSearch('')
+        setIndex(3)
         setTimeout(() => setLoading(false), 2000)
     }
 
