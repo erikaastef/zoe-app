@@ -100,8 +100,13 @@ export default function Agents() {
     const handleNewSearch = () => {
         setLoading(true)
         let filteredData = agents.filter((agent: any) => agent.income <= (Number(search) + 10000) && agent.income >= (Number(search) - 10000))
+        if (hiddenAgents) {
+            let noHiddenAgents = filteredData.filter((agent: any) => !hiddenAgents.some((hiddenAgent: any) => hiddenAgent.name === agent.name))
+            setAgentsCopy(noHiddenAgents)
+        } else {
+            setAgentsCopy(filteredData)
+        }
         dispatch(setCurrentIncome(search))
-        setAgentsCopy(filteredData)
         setSearch('')
         setIndex(3)
         setTimeout(() => setLoading(false), 2000)
