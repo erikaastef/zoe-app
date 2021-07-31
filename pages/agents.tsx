@@ -203,7 +203,7 @@ export default function Agents() {
                                             </Anchor>
                                         </Controllers>
                                     </> :
-                                    <ErrorMessage message="No available Agents based on your income. Please try a different income value." />
+                                    <ErrorMessage message="No available Agents based on your income.<br/> Please try a different income value." />
                             }
                         </Container>
                 }
