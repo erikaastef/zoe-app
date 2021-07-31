@@ -108,6 +108,7 @@ export default function Agents() {
         }
         dispatch(setCurrentIncome(search))
         setSearch('')
+        setOrder('')
         setIndex(3)
         setTimeout(() => setLoading(false), 2000)
     }
