@@ -25,7 +25,7 @@ export default function Home() {
     }
   }
   const handleKeyDown = (e: any) => {
-    if (e.key === 'Enter' && search.length) {
+    if (e.key === 'Enter' && search.length >= 5) {
       handleClick(e)
     }
   }

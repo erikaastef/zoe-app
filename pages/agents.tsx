@@ -93,7 +93,7 @@ export default function Agents() {
         }
     }
     const handleKeyDown = (e: any) => {
-        if (e.key === 'Enter' && search.length) {
+        if (e.key === 'Enter' && search.length >= 5) {
             handleNewSearch()
         }
     }
