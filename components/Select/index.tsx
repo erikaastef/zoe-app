@@ -111,7 +111,7 @@ const Menu = styled(motion.div)`
     position:absolute;
     top: 69px;
     background-color:${({ theme }) => theme.colors.white};
-    min-height:200px;
+    min-height:100px;
     width:100%;
     border: 1px solid ${({ theme }) => theme.colors.gainsboro};
     z-index:4;
