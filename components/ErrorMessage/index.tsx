@@ -29,6 +29,5 @@ const Message = styled.p`
     line-height: 126%;
     letter-spacing: -0.01em;
     color:${({ theme }) => theme.colors.lavenderBlue};
-    padding:15px;
-    max-width:90%;
+    padding:15px 0px 30px;
 `

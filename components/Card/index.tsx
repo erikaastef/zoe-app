@@ -45,6 +45,8 @@ const Box = styled.div`
             left: -30px;
             bottom: -30px;
             right: -30px;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
     }
     @media(max-width:${({ theme }) => theme.device.sm}){
