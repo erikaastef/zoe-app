@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import styled from 'styled-components'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/router'
 
 import { Header } from '../components/Header'
-import { Input } from '../components/Input'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import { Anchor } from '../components/Anchor'
@@ -14,56 +12,38 @@ import { ErrorMessage } from '../components/ErrorMessage'
 
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { setAgents, setHiddenAgents, setCurrentIncome } from '../redux/userSlice'
-import { currencyFormat, sortAgents } from '../utils'
+import { setHiddenAgents } from '../redux/userSlice'
+import { sortAgents } from '../utils'
 import { Preloader } from '../components/Preloader'
 
-export default function Agents() {
+export default function HiddenAgents() {
     const router = useRouter()
     const [loading, setLoading] = useState(true)
-    const [search, setSearch] = useState('')
-    const [showInstructions, setShowInstructions] = useState(false)
 
     const [order, setOrder] = useState('')
+
+    const [retrievedAgents, setRetrievedAgents] = useState([])
 
     const [agentsCopy, setAgentsCopy] = useState([])
     const [index, setIndex] = useState(3)
 
     const dispatch = useAppDispatch()
-    const currentIncome = useAppSelector<any>((state) => state.user.currentIncome)
-    const agents = useAppSelector<any>((state) => state.user.agents)
     const hiddenAgents = useAppSelector<any>((state) => state.user.hiddenAgents)
 
-
-    const fetchAgents = async () => {
-        try {
-            const promise = await axios.get('/api/agents')
-            const response = promise.data
-            const availableAgents = response.result
-            const filteredData = availableAgents.filter((agent: any) => agent.income <= (Number(currentIncome) + 10000) && agent.income >= (Number(currentIncome) - 10000))
-            dispatch(setAgents(availableAgents))
-            setAgentsCopy(filteredData)
-            setTimeout(() => setLoading(false), 2000)
-
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
     useEffect(() => {
-        if (agents.length) {
-            let filteredData = agents.filter((agent: any) => agent.income <= (Number(currentIncome) + 10000) && agent.income >= (Number(currentIncome) - 10000))
-            if (hiddenAgents.length) {
-                let noHiddenAgents = filteredData.filter((agent: any) => !hiddenAgents.some((hiddenAgent: any) => hiddenAgent.id === agent.id))
-                setAgentsCopy(noHiddenAgents)
-            } else {
-                setAgentsCopy(filteredData)
-            }
+        if (hiddenAgents.length) {
+            setAgentsCopy(hiddenAgents)
             setTimeout(() => setLoading(false), 2000)
         } else {
-            fetchAgents()
+            setTimeout(() => setLoading(false), 2000)
         }
     }, [])
+
+    useEffect(() => {
+        if (loading) {
+            setTimeout(() => setLoading(false), 2000)
+        }
+    }, [loading])
 
     const selectOptions = [
         {
@@ -84,40 +64,25 @@ export default function Agents() {
         }
     ]
 
+    const handleAvailableAgentsRedirect = (e: any) => {
+        e.preventDefault()
+        if (agentsCopy.length) {
+            let hiddenAgentsChange = hiddenAgents.filter((hiddenAgent: any) => !retrievedAgents.some((agent: any) => agent.id === hiddenAgent.id))
+            dispatch(setHiddenAgents(hiddenAgentsChange))
+        } else {
+            dispatch(setHiddenAgents([]))
+        }
+        router.push('/agents')
+    }
+    const handleSelectAll = () => {
+        dispatch(setHiddenAgents([]))
+        setAgentsCopy([])
+        setLoading(true)
+    }
     const handleSelectOnChange = (option: any) => {
         setOrder(option.label)
         let newOrder = sortAgents({ agents: [...agentsCopy], type: option.value })
         setAgentsCopy(newOrder)
-    }
-
-    const handleInputChange = (e: any) => {
-        let value = e.target.value
-        setSearch(value)
-        if (value.length < 5) {
-            if (!showInstructions) setShowInstructions(true)
-        } else {
-            setShowInstructions(false)
-        }
-    }
-    const handleKeyDown = (e: any) => {
-        if (e.key === 'Enter' && search.length >= 5) {
-            handleNewSearch()
-        }
-    }
-    const handleNewSearch = () => {
-        setLoading(true)
-        let filteredData = agents.filter((agent: any) => agent.income <= (Number(search) + 10000) && agent.income >= (Number(search) - 10000))
-        if (hiddenAgents.length) {
-            let noHiddenAgents = filteredData.filter((agent: any) => !hiddenAgents.some((hiddenAgent: any) => hiddenAgent.id === agent.id))
-            setAgentsCopy(noHiddenAgents)
-        } else {
-            setAgentsCopy(filteredData)
-        }
-        dispatch(setCurrentIncome(search))
-        setSearch('')
-        setOrder('')
-        setIndex(3)
-        setTimeout(() => setLoading(false), 2000)
     }
 
     const handleShowMore = () => {
@@ -128,13 +93,10 @@ export default function Agents() {
     }
     const handleClickedAgent = (index: any) => {
         let currentAgents = [...agentsCopy]
-        let removedAgent = currentAgents.splice(index, 1)
+        let clickedAgent = currentAgents.splice(index, 1)
         setAgentsCopy(currentAgents)
-        dispatch(setHiddenAgents([...hiddenAgents, ...removedAgent]))
-    }
-    const handleHiddenAgentsRedirect = (e: any) => {
-        e.preventDefault()
-        router.push('/hidden-agents')
+        setRetrievedAgents([...retrievedAgents, ...clickedAgent])
+        if (!currentAgents.length) setLoading(true)
     }
     return (
         <>
@@ -158,32 +120,13 @@ export default function Agents() {
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
                         >
-                            {agentsCopy.length ? <h1>Your matches</h1> : <h1>No matches</h1>}
-                            <h2>Your income: <strong>{currencyFormat(currentIncome)}</strong></h2>
-                            <Form>
-                                <Input
-                                    type="number"
-                                    value={search}
-                                    icon="dollar"
-                                    label="Search new income"
-                                    showInstructions={showInstructions}
-                                    instructions="Enter an amount of at least 5 digits."
-                                    onChange={handleInputChange}
-                                    onKeyDown={handleKeyDown}
-                                />
-                                <Button
-                                    className="match-btn"
-                                    onClick={handleNewSearch}
-                                    disabled={search.length < 5}
-                                    icon="leftArrow"
-                                >
-                                    Get matches
-                                </Button>
-                            </Form>
+
                             {
                                 agentsCopy.length ?
                                     <>
-                                        <Flex>
+                                        <h1>Hidden agents</h1>
+                                        <h2>Select the agents you would like to see again in your search feed</h2>
+                                        <Menu>
                                             <Select
                                                 value={order}
                                                 label="Order agents by"
@@ -191,15 +134,20 @@ export default function Agents() {
                                                 options={selectOptions}
                                                 onChange={handleSelectOnChange}
                                             />
-                                            <Button
-                                                onClick={handleHiddenAgentsRedirect}
-                                                className="hidden-agents-redirect-btn"
-                                                icon="leftArrow"
-                                                disabled={!hiddenAgents.length}
+                                            <Anchor
+                                                onClick={handleSelectAll}
+                                                className="select-all-hidden"
                                             >
-                                                See hidden agents
+                                                Select all
+                                            </Anchor>
+                                            <Button
+                                                onClick={handleAvailableAgentsRedirect}
+                                                className="agents-redirect-btn"
+                                                icon="leftArrow"
+                                            >
+                                                Go back to your matches
                                             </Button>
-                                        </Flex>
+                                        </Menu>
                                         <Grid>
                                             {agentsCopy.slice(0, index).map((agent: any, index) => (
                                                 <Card
@@ -225,17 +173,15 @@ export default function Agents() {
                                         </Controllers>
                                     </> :
                                     <>
-                                        <ErrorMessage message="No available Agents based on your income.<br/> Please try a different income value." />
-                                        {
-                                            hiddenAgents.length ?
-                                                <Button
-                                                    onClick={handleHiddenAgentsRedirect}
-                                                >
-                                                    Check hidden agents
-                                                </Button>
-                                                : ''
-
-                                        }
+                                        <h1>No hidden agents</h1>
+                                        <ErrorMessage message="There's no agent being excluded from your feed." />
+                                        <Button
+                                            className="mt-20"
+                                            onClick={handleAvailableAgentsRedirect}
+                                            icon="leftArrow"
+                                        >
+                                            Go back to your matches
+                                        </Button>
                                     </>
                             }
                         </Container>
@@ -255,7 +201,7 @@ const Container = styled(motion.div)`
     height:100%;
     min-height: calc(100vh - 60px);
     margin:0 auto;
-    padding:30px 0px;
+    padding:40px 0px;
     h1{
         text-align:center;
         font-style: normal;
@@ -272,7 +218,10 @@ const Container = styled(motion.div)`
         font-size: 16px;
         line-height: 126%;
         letter-spacing: -0.01em;
-        margin-bottom:12px;
+        margin-bottom:30px;
+    }
+    .mt-20{
+        margin-top: 20px;
     }
 `
 const Grid = styled.div`
@@ -287,37 +236,48 @@ const Grid = styled.div`
         grid-template-columns: 1fr;
     }
 `
-const Flex = styled.div`
-    display:flex;
+const Menu = styled.div`
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
     align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
+    grid-template-areas: 'select anchor button';
     gap:25px;
     width:100%;
     margin-bottom:38px;
     .order-select{
+        grid-area:select;
         width:220px;
-        @media(max-width:${({ theme }) => theme.device.sm}){
+    }
+    .select-all-hidden{
+        grid-area:anchor;
+        align-self: end;
+        justify-self: center;
+    }
+    .agents-redirect-btn{
+        grid-area:button;
+        align-self: end;
+        justify-self: end;
+    }
+    @media(max-width:${({ theme }) => theme.device.md}){
+        grid-template-columns:0.7fr 1.3fr;
+        grid-template-rows: 1fr auto;
+        grid-template-areas: 
+        'select button'
+        'anchor  anchor';
+        .order-select{
             width:100%;
         }
     }
-    .hidden-agents-redirect-btn{
-        align-self: flex-end;
-    }
-`
-const Form = styled.div`
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-    width:414px;
-    margin:0 auto;
-    margin-bottom:10px;
-    .match-btn{
-        align-self:flex-end;
-    }
     @media(max-width:${({ theme }) => theme.device.sm}){
-        width:100%;
-        margin-bottom:25px;
+        grid-template-columns:1fr;
+        grid-template-rows:auto;
+        grid-template-areas: 
+        'select'  
+        'button'
+        'anchor';
+        .order-select{
+            width:100%;
+        }
     }
 `
 const Controllers = styled.div`
