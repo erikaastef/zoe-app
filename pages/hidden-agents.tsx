@@ -160,7 +160,7 @@ export default function HiddenAgents() {
                                         <Controllers>
                                             <Anchor
                                                 onClick={handleShowLess}
-                                                disabled={index === 3}
+                                                disabled={index === 3 || agentsCopy.length <= 3}
                                             >
                                                 Show less -
                                             </Anchor>

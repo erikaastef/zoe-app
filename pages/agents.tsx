@@ -65,6 +65,13 @@ export default function Agents() {
         }
     }, [])
 
+
+    useEffect(() => {
+        if (loading) {
+            setTimeout(() => setLoading(false), 2000)
+        }
+    }, [loading])
+
     const selectOptions = [
         {
             value: 'name',
@@ -131,6 +138,7 @@ export default function Agents() {
         let removedAgent = currentAgents.splice(index, 1)
         setAgentsCopy(currentAgents)
         dispatch(setHiddenAgents([...hiddenAgents, ...removedAgent]))
+        if (!currentAgents.length) setLoading(true)
     }
     const handleHiddenAgentsRedirect = (e: any) => {
         e.preventDefault()
@@ -212,7 +220,7 @@ export default function Agents() {
                                         <Controllers>
                                             <Anchor
                                                 onClick={handleShowLess}
-                                                disabled={index === 3}
+                                                disabled={index === 3 || agentsCopy.length <= 3}
                                             >
                                                 Show less -
                                             </Anchor>
