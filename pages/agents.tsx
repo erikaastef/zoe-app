@@ -124,7 +124,6 @@ export default function Agents() {
         setSearch('')
         setOrder('')
         setIndex(3)
-        setTimeout(() => setLoading(false), 2000)
     }
 
     const handleShowMore = () => {
