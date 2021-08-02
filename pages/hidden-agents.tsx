@@ -22,8 +22,6 @@ export default function HiddenAgents() {
 
     const [order, setOrder] = useState('')
 
-    const [retrievedAgents, setRetrievedAgents] = useState([])
-
     const [agentsCopy, setAgentsCopy] = useState([])
     const [index, setIndex] = useState(3)
 
@@ -66,12 +64,6 @@ export default function HiddenAgents() {
 
     const handleAvailableAgentsRedirect = (e: any) => {
         e.preventDefault()
-        if (agentsCopy.length) {
-            let hiddenAgentsChange = hiddenAgents.filter((hiddenAgent: any) => !retrievedAgents.some((agent: any) => agent.id === hiddenAgent.id))
-            dispatch(setHiddenAgents(hiddenAgentsChange))
-        } else {
-            dispatch(setHiddenAgents([]))
-        }
         router.push('/agents')
     }
     const handleSelectAll = () => {
@@ -93,9 +85,9 @@ export default function HiddenAgents() {
     }
     const handleClickedAgent = (index: any) => {
         let currentAgents = [...agentsCopy]
-        let clickedAgent = currentAgents.splice(index, 1)
+        currentAgents.splice(index, 1)
         setAgentsCopy(currentAgents)
-        setRetrievedAgents([...retrievedAgents, ...clickedAgent])
+        dispatch(setHiddenAgents(currentAgents))
         if (!currentAgents.length) setLoading(true)
     }
     return (
